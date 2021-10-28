@@ -1,17 +1,17 @@
-g[0]: empty
-g[1]: 1 2 3 4 5 
-g[2]: 0 
+g[0]: 1 2 3 5 9 
+g[1]: -19 1 4 5 23 25 
+g[2]: empty
 g[3]: empty
 g[4]: empty
 g[5]: empty
 g[6]: empty
-g[7]: empty
-g[8]: empty
+g[7]: 4 
+g[8]: 1 
 g[9]: empty
 g[10]: empty
 g[11]: empty
 g[12]: empty
-g[13]: 11 81 
+g[13]: empty
 g[14]: empty
 g[15]: empty
 g[16]: empty
