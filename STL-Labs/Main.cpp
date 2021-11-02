@@ -2,10 +2,8 @@
 
 #include <iostream>
 #include <stack>
-#include <unordered_set>
 #include <algorithm>
 #include <vector>
-#include <cstdio>
 
 #define all(x) (x).begin(), (x).end()
 #define pb push_back
@@ -15,117 +13,98 @@
 
 using namespace std;
 
-template <typename T> inline void printvec(vector < T > vec) 
+template <typename T> inline void printvec(vector < T > vec)
 {
-	 for (int i = 0; i < (int)vec.size(); ++i) 
-	 {
-		  cout << vec[i] << ' ';
-	 }
+   for (int i = 0; i < (int)vec.size(); ++i)
+   {
+      cout << vec [ i ] << ' ';
+   }
 }
 
 void task1()
 {
-	 cout << "Задание 1:\nВведите последовательность целых чисел, оканчивающуюся нулём:\n";
-	 int x;
-	 cin >> x;
-	 stack <int> st;
+   cout << "Задание 1:\nВведите последовательность целых чисел, оканчивающуюся нулём:\n";
+   int x;
+   cin >> x;
+   stack <int> st;
 
-	 while (x) 
-	 {
-		  st.push(x);
-		  cin >> x;
-	 }
+   while (x)
+   {
+      st.push(x);
+      cin >> x;
+   }
 
-	 cout << "Последовательность в обратном порядке:\n";
-	 while (!st.empty()) 
-	 {
-		  cout << st.top() << " ";
-		  st.pop();
-	 }
-	 cout << "\n\n";
+   cout << "Последовательность в обратном порядке:\n";
+   while (!st.empty())
+   {
+      cout << st.top() << " ";
+      st.pop();
+   }
+   cout << "\n\n";
 }
 
-void task2() 
+void task2()
 {
-	 cout << "Задание 2:\nВведите последовательность целых чисел, содержащую повторения и оканчивающуюся нулём:\n";
-	 int x;
-	 cin >> x;
-	 vector <int> v;
+   cout << "Задание 2:\nВведите последовательность целых чисел, содержащую повторения и оканчивающуюся нулём:\n";
+   int x;
+   cin >> x;
+   vector <int> v;
 
-	 while (x) 
-	 {
-		 if (find(all(v), x) == v.end())
-			 v.pb(x);
-		 cin >> x;
-	 }
-	 sort(all(v));
+   while (x)
+   {
+      v.push_back(x);
+      cin >> x;
+   }
+   sort(all(v));
+   auto last = unique(all(v));
+   v.erase(last, v.end());
 
-	 cout << "Последовательность без повторяющихся элементов и упорядоченная по возрастанию:\n";
-	 printvec(v);
-	 cout << "\n\n";
+   cout << "Последовательность без повторяющихся элементов и упорядоченная по возрастанию:\n";
+   printvec(v);
+   cout << "\n\n";
 }
 
-template<typename Iterator, typename T>
-Iterator findKeyInMap(Iterator begin, Iterator end, const T& v)
+void task3()
 {
-	for (; begin != end; ++begin)
-		if (begin->first == v)
-			return begin;
+   cout << "Задание 3:\nВведите последовательность пар чисел: номер массива и число, добавляемое в этот массив. Признаком конца ввода служит пара, состоящая из двух нулей:\n";
+   int x, y;
+   cin >> x >> y;
+   vector <vector <int> > g;
 
-	return end;
+   while (x || y)
+   {
+      if (g.size() <= x)
+      {
+         g.resize(x + 1);
+      }
+      g[x].push_back(y);
+      cin >> x >> y;
+   }
+
+   for (auto& i : g)
+   {
+      sort(all(i));
+   }
+
+   cout << "Отсортированные динамические массивы по возрастанию выведены в out.txt";
+   Fout("out.txt");
+   for (const auto& k : g)
+   {
+      static size_t i = 0;
+      cout << "[" << i << "] :   ";
+      printvec(k);
+      cout << endl;
+      ++i;
+   }
 }
 
-bool comp(pair <int, vector <int> > x1, pair <int, vector <int> > x2) 
+int main()
 {
-	return ((x1.first) < (x2.first));
-}
+   setlocale(LC_ALL, "rus");
 
-void task3() 
-{
+   task1();
+   task2();
+   task3();
 
-	 cout << "Задание 3:\nВведите последовательность пар чисел: номер массива и число, добавляемое в этот массив. Признаком конца ввода служит пара, состоящая из двух нулей:\n";
-	 int x, y;
-	 cin >> x >> y;
-	 vector <pair <int, vector<int> > > g;
-
-	 while (x || y) // !(!x && !y)
-	 {
-		 auto it = findKeyInMap(all(g), x);
-		 if (it != g.end()) 
-		 {
-			 (it->second).pb(y);
-		 }
-		 else 
-		 {
-			 pair <int, vector <int> > cur;
-			 cur.first = x;
-			 cur.second.pb(y);
-			 g.pb(cur);
-		 }
-
-		 cin >> x >> y;
-	 }
-	 sort(all(g), comp);
-
-	 cout << "Отсортированные динамические массивы по возрастанию выведены в out.txt";
-
-	 Fout("out.txt");
-	 for (auto q : g) 
-	 {
-		 sort(all(q.second));
-		 cout << "g[" << q.first << "]: ";
-		 printvec(q.second);
-		 cout << "\n";
-	 }
-}
-
-int main() 
-{
-	 setlocale(LC_ALL, "rus");
-	 
-	 task1();
-	 task2();
-	 task3();
-
-	 return 0;
+   return 0;
 }
