@@ -16,6 +16,9 @@
     <Filter Include="Файлы ресурсов\Task1">
       <UniqueIdentifier>{f4d51ccd-b6db-40dc-bb07-5ae4d8e4c729}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Файлы ресурсов\Task2">
+      <UniqueIdentifier>{0838787f-ca0f-4db7-aa32-aeabc3620166}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -28,6 +31,21 @@
     </Text>
     <Text Include="Task1\input.txt">
       <Filter>Файлы ресурсов\Task1</Filter>
+    </Text>
+    <Text Include="Task2\output.txt">
+      <Filter>Файлы ресурсов\Task2</Filter>
+    </Text>
+    <Text Include="Task2\1.txt">
+      <Filter>Файлы ресурсов\Task2</Filter>
+    </Text>
+    <Text Include="Task2\2.txt">
+      <Filter>Файлы ресурсов\Task2</Filter>
+    </Text>
+    <Text Include="Task2\3.txt">
+      <Filter>Файлы ресурсов\Task2</Filter>
+    </Text>
+    <Text Include="Task2\n.txt">
+      <Filter>Файлы ресурсов\Task2</Filter>
     </Text>
   </ItemGroup>
 </Project>
