@@ -15,10 +15,9 @@ using namespace std;
 int main()
 {
    int n, m;
-
    cin >> n >> m;
 
-   vector < vector < pii > > g(n + 1);
+   vector < vector < pii > > g(n + 1);                            // начальный граф (0 элемент не используется) (pii используется вида конецРебра - весРебра)
 
    for (int i = 1; i <= m; ++i)
    {
@@ -28,40 +27,39 @@ int main()
       g[v].pb(mp(u, w));
    }
 
-   priority_queue <pii, vector < pii >, greater < pii> > q;
+   priority_queue < pii, vector < pii >, greater < pii > > q;     // Очередь вес-вершина
+   vector < int > key(n + 1, INT_MAX);                            // Храним вес минимального ребра, исходящего из выбранной вершины
+   vector < int > p(n + 1, -1);                                   // Храним вершину, куда указывает минимальное ребро из выбранной вершины
+   vector < bool > was(n + 1, false);                             // Для отметок, прошли ли мы вершину
 
-   vector < int > key(n + 1, INT_MAX);
-   vector < int > p(n + 1, -1);
-   vector < bool > was(n + 1, false);
 
-
-   int start = 1;
+   int start = 1;                                                 // Начальная вершина обхода
+   int min_w = 0;                                                 // Вес минимального графа
 
    q.push(mp(0, start));
 
-   int min_w = 0;
-
    while (!q.empty())
    {
-      int len = q.top().F;
-      int v = q.top().S;
+      int len = q.top().F;                                        // Длина ребра
+      int v = q.top().S;                                          // Вершина, куда ребро привело
 
       q.pop();
 
-      if (was[v])
+      if (was[v])                                                 // Если уже были в этой вершине, то пропускаем ребро
          continue;
 
-      was[v] = true;
+      was[v] = true;                                              // Помечаем вершину как пройденную, считаем вес ребра, который вёл до неё
       min_w += len;
 
-      for (auto cur : g[v])
+      for (auto& cur : g[v])                                      // Находим все рёбра этой вершины
       {
-         int to = cur.F, w = cur.S;
-         if (!was[to] && key[to] > w)
+         int to = cur.F;                                          // Вершина, куда текущее ребро ведёт
+         int w = cur.S;                                           // Вес текущего ребра
+         if (!was[to] && key[to] > w)                             // Если мы ещё не были в вершине и вес минимального ребра этой вершины больше, чем вес текущего ребра, то
          {
-            key[to] = w;
-            q.push(mp(key[to], to));
-            p[to] = v;
+            key[to] = w;                                          // Запоминаем для этой вершины вес минимального ребра   
+            q.push(mp(w, to));                                    // Пушим вершину с весом до неё в очередь
+            p[to] = v;                                            // Отмечаем, что из этой вершины можно попасть в вершину [v]
          }
       }
    }
