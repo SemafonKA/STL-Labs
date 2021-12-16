@@ -8,6 +8,8 @@
 
 #pragma region Defines
 
+//#define DEBUG
+
 #define pb push_back
 #define mp make_pair
 #define F first
@@ -47,7 +49,8 @@ public:
    }
 };
 
-pair < vector < int >, vector < int > > dijkstra (vector < vector < pii > > g, int f) {
+inline pair < vector < int >, vector < int > > dijkstra(const vector < vector < pii > >& g, int f)
+{
    priority_queue < pii > q;           // [first]: weight, [second]: vertexTo
 
    vector < int > distance((int)g.size(), INT_MAX);
@@ -58,7 +61,7 @@ pair < vector < int >, vector < int > > dijkstra (vector < vector < pii > > g, i
 
    while (!q.empty())
    {
-      int v = q.top().S; 
+      int v = q.top().S;
       int w = -q.top().F;
       q.pop();
       if (w > distance[v])
@@ -79,40 +82,40 @@ pair < vector < int >, vector < int > > dijkstra (vector < vector < pii > > g, i
    return mp(distance, parent);
 }
 
-string getPath(vector < int > distance, vector < int > parent, int f, int s)
+inline string getPath(const vector < int >& distance, const vector < int >& parent, const int f, const int s)
 {
-   stringstream outSs;
+   string str;
 
    if (distance[s] != INT_MAX)
    {
-      outSs << "Vertex to: " << s << ", distance: " << distance[s] << ", path: ";
+      str = "Vertex to: " + to_string(s) + ", distance: " + to_string(distance[s]) + ", path: ";
 
-      vector < int > path;
-      for (int x = s; x != f; x = parent[x])
-         path.pb(x);
-      path.pb(f);
-      reverse(all(path));
+      //vector < int > path;
+      //for (int x = s; x != f; x = parent[x])
+      //   path.pb(x);
+      //path.pb(f);
+      //reverse(all(path));
 
-      for (auto x : path)
-         outSs << x << ' ';
-      outSs << endl;
+      //for (auto x : path)
+      //   str += to_string(x) + " ";
+      str += "\n";
    }
-   else
-   {
-      outSs << "There is no path from " << f << " to " << s << endl;
-   }
-   return outSs.str();
+   //else
+   //{
+   //   str = "There is no path from " + to_string(f) + " to " + to_string(s) + "\n";
+   //}
+   return str;
 }
 
-void getAllRoutesBy(int startVertex, vector < vector < pii > > graph)
+void getAllRoutesBy(int startVertex, const vector < vector < pii > >& graph)
 {
-   ofstream out; out.open(outputPath + to_string(startVertex) + ".txt");
+   ofstream out(outputPath + to_string(startVertex) + ".txt");
    if (!out.is_open()) throw exception("Output file is not open!");
-   
-   pair < vector < int >, vector < int > > babah = dijkstra(graph, startVertex);
 
-   vector < int > d = babah.F;
-   vector < int > p = babah.S;
+   pair < vector < int >, vector < int > >&& babah = dijkstra(graph, startVertex);
+
+   vector < int >& d = babah.F;
+   vector < int >& p = babah.S;
 
    for (int i = 1; i < (int)graph.size(); ++i)
    {
@@ -152,35 +155,148 @@ int main()
    Timer timer;
    //for (int i = 1; i < g.size(); ++i)
    //{
-   //   stringstream ss;
+   //   #ifdef DEBUG
+   //   static stringstream ss; ss.str("");
    //   ss << "Getting routes to vertex " << i << endl;
    //   cerr << ss.str();
+   //   #endif // ifdef DEBUG
 
    //   getAllRoutesBy(i, g);
 
+   //   #ifdef DEBUG
    //   ss.str("");
    //   ss << "All routes to vertex " << i << " is already printed" << endl;
    //   cerr << ss.str();
+   //   #endif // ifdef DEBUG
    //}
 
    //cerr << "Linear program is over by " << timer.elapsed() << " second" << endl;
 
    timer.reset();
-#pragma omp parallel for num_threads(12) schedule(dynamic)
+   #pragma omp parallel for num_threads(12) schedule(guided, 10)        // more threads == faster
    for (int i = 1; i < g.size(); ++i)
    {
-      stringstream ss;
+      #ifdef DEBUG
+      static stringstream ss;
       ss << "Getting routes to vertex " << i << endl;
       cerr << ss.str();
+      #endif // ifdef DEBUG
 
       getAllRoutesBy(i, g);
 
+      #ifdef DEBUG
       ss.str("");
       ss << "All routes to vertex " << i << " is already printed" << endl;
       cerr << ss.str();
+      #endif // ifdef DEBUG
    }
 
    cerr << "Parallel program is over by " << timer.elapsed() << " second" << endl;
 
    return 0;
 }
+
+//#include<vector>
+//#include <string>
+//#include<fstream>
+//#include<queue>
+//#include<omp.h>
+//#include<locale.h>
+//
+//using namespace std;
+//
+//typedef pair<int, int> myPair;
+//
+//class graph
+//{
+//
+//private:
+//   int vertexs;
+//   int edges;
+//   int weight;
+//   int v1;
+//   int v2;
+//
+//   vector < pair<int, int>>* g;
+//
+//public:
+//
+//   graph() //
+//   {
+//      ifstream in("input.txt");
+//      if (!in.is_open()) throw exception();
+//
+//      in >> vertexs >> edges;
+//      this->vertexs = vertexs + 1;
+//      this->edges = edges;
+//      g = new vector<myPair>[vertexs];
+//
+//      for (int i = 0; i < edges; ++i)
+//      {
+//         in >> v1 >> v2 >> weight;
+//         g[v1].push_back(make_pair(v2, weight));
+//         g[v2].push_back(make_pair(v1, weight));
+//      }
+//   }
+//
+//   int get_vertexs()
+//   {
+//      return vertexs;
+//   }
+//
+//   void short_ways()
+//   {
+//      int j; ofstream out("out.txt");
+//      out << "Пары вершин и миниальное растояние до них: " << endl;
+//
+//#pragma omp parallel for
+//      for (int j = 1; j < vertexs; j++)
+//      {
+//         vector<int> way(vertexs, INT_MAX);
+//         vector<bool> visit(vertexs, false);
+//         vector<int> connect(vertexs, -1);
+//         priority_queue < myPair, vector<myPair>, greater < myPair>> queue;
+//         queue.push(make_pair(0, j));
+//         way[j] = 0;
+//         while (!queue.empty())
+//         {
+//            int l = queue.top().second;
+//            visit[l] = true;
+//            queue.pop();
+//            for (vector<myPair>::iterator it = g[l].begin(); it != g[l].end(); ++it)
+//            {
+//               int v = (*it).first;
+//               int w = (*it).second;
+//               if ((way[v] > way[l] + w) && !visit[v])
+//               {
+//                  way[v] = way[l] + w;
+//                  connect[v] = v;
+//                  queue.push(make_pair(way[v], v));
+//               }
+//            }
+//         }
+//
+//         string str;
+//         for (int i = 1; i < vertexs; i++)
+//         {
+//            if (connect[i] != -1)
+//            {
+//               //out « j « " " « connect[i] « " " « way[i] « endl;
+//               str = to_string(j) + " " + to_string(connect[i]) + " " + to_string(way[i]) + "\n";
+//               out << str;
+//            }
+//         }
+//      }
+//
+//      out.close();
+//   }
+//};
+//
+//int main()
+//{
+//   setlocale(LC_ALL, "");
+//   graph g;
+//   g.short_ways();
+//
+//   return 0;
+//}
