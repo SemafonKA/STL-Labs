@@ -1,6 +1,7 @@
 #include <iostream>
 #include <vector>
 #include <queue>
+#include <fstream>
 
 #define pb push_back
 #define mp make_pair
@@ -14,18 +15,21 @@ using namespace std;
 
 int main()
 {
+   ifstream in("input.txt");
+
    int n, m;
-   cin >> n >> m;
+   in >> n >> m;
 
    vector < vector < pii > > g(n + 1);                            // начальный граф (0 элемент не используетс€) (pii используетс€ вида конец–ебра - вес–ебра)
 
    for (int i = 1; i <= m; ++i)
    {
       int u, v, w;
-      cin >> u >> v >> w;
+      in >> u >> v >> w;
       g[u].pb(mp(v, w));
       g[v].pb(mp(u, w));
    }
+   in.close();
 
    priority_queue < pii, vector < pii >, greater < pii > > q;     // ќчередь вес-вершина
    vector < int > key(n + 1, INT_MAX);                            // ’раним вес минимального ребра, исход€щего из выбранной вершины
@@ -64,10 +68,14 @@ int main()
       }
    }
 
-   cout << min_w << endl;
+   ofstream out("output.txt");
+
+   out << min_w << endl;
 
    for (int i = 2; i <= n; ++i)
-      cout << p[i] << " - " << i << endl;
+      out << p[i] << " - " << i << endl;
+
+   out.close();
 
    return 0;
 }
