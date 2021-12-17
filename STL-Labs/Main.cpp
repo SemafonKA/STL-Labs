@@ -256,8 +256,8 @@ inline void dijkstra(const vector < vector < pii > >& g, int f, vector < int >& 
 {
    priority_queue < pii > q;           // [first]: weight, [second]: vertexTo
 
-   //vector < int > distance((int)g.size(), INT_MAX);
-   //vector < int > parent((int)g.size());
+   distance.resize((int)g.size(), INT_MAX);
+   parent.resize((int)g.size());
 
    distance[f] = 0;
    q.push(mp(distance[f], f));
@@ -281,8 +281,6 @@ inline void dijkstra(const vector < vector < pii > >& g, int f, vector < int >& 
          }
       }
    }
-
-   //return mp(distance, parent);
 }
 
 inline void getPath(const vector < int >& distance, const vector < int >& parent, const int f, const int s, string& outStr)
@@ -302,19 +300,14 @@ inline void getPath(const vector < int >& distance, const vector < int >& parent
    }
    else
    {
-      //str = "There is no path from " + to_string(f) + " to " + to_string(s);
       outStr.resize(0);
    }
-   //return str;
 }
 
 inline void getAllRoutesBy(int startVertex, const vector < vector < pii > >& graph, ostream& out)
 {
-   //ofstream out(outputPath + to_string(startVertex) + ".txt");
-   //if (!out.is_open()) throw exception("Output file is not open!");
-
-   vector <int> distance((int)graph.size(), INT_MAX);
-   vector <int> parent((int)graph.size());
+   vector <int> distance;
+   vector <int> parent;
    string path;
 
    dijkstra(graph, startVertex, distance, parent);
@@ -324,7 +317,6 @@ inline void getAllRoutesBy(int startVertex, const vector < vector < pii > >& gra
       if (i == startVertex)
          continue;
 
-      //path.resize(0);
       getPath(distance, parent, startVertex, i, path);
 
       if (!path.empty())
@@ -332,7 +324,6 @@ inline void getAllRoutesBy(int startVertex, const vector < vector < pii > >& gra
          out << path + "\n";
       }
    }
-   //out.close();
 }
 
 using namespace std;
