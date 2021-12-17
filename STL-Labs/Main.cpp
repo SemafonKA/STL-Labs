@@ -1,4 +1,5 @@
 #include <vector>
+#include <string>
 #include <iostream>
 #include <fstream>
 #include <queue>
@@ -22,7 +23,7 @@ using namespace std;
 class Timer
 {
 private:
-   // Псевдонимы типов используются для удобного доступа к вложенным типам
+   // РџСЃРµРІРґРѕРЅРёРјС‹ С‚РёРїРѕРІ РёСЃРїРѕР»СЊР·СѓСЋС‚СЃСЏ РґР»СЏ СѓРґРѕР±РЅРѕРіРѕ РґРѕСЃС‚СѓРїР° Рє РІР»РѕР¶РµРЅРЅС‹Рј С‚РёРїР°Рј
    using clock_t = std::chrono::high_resolution_clock;
    using second_t = std::chrono::duration<double, std::ratio<1> >;
 
@@ -78,7 +79,7 @@ inline void dijkstra(const vector < vector < pii > >& g, int f, vector < int >& 
 inline void getPath(const vector < int >& distance, const vector < int >& parent, const int f, const int s, string& outStr)
 {
    //outStr = to_string(f) + "\t\t" + to_string(s) + "\t\t" + to_string(distance[s]);
-   outStr = "Begin: " + to_string(f) + ",\tend: " + to_string(s) + ",\tdistance: " + to_string(distance[s]) + ",\tpath: ";
+   outStr = "Begin: " + to_string(f) + ", \tend: " + to_string(s) + ", \tdistance: " + to_string(distance[s]) + ",\tpath: ";
    vector < int > path;
    for (int x = s; x != f; x = parent[x])
       path.pb(x);
@@ -111,14 +112,11 @@ inline void getAllRoutes(const vector < vector < pii > >& graph, ostream& out)
          out << path + "\n";
       }
    }
-
 }
 
 int main()
 {
-   setlocale(LC_ALL, "");
-
-   Timer timer;
+   setlocale(LC_ALL, "ru.UTF-8");
 
    ifstream in; in.open("input.txt");
    if (!in.is_open()) throw exception("Input file is not open!");
@@ -141,10 +139,11 @@ int main()
    ofstream out("output.txt");
    if (!out.is_open()) throw exception("Output file is not open!");
 
-   timer.reset();
+   Timer timer;
    getAllRoutes(g, out);
-   cout << timer.elapsed() << endl;
+   auto time = timer.elapsed();
 
    out.close();
+
    return 0;
 }
