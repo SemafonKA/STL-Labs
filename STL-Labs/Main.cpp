@@ -285,23 +285,17 @@ inline void dijkstra(const vector < vector < pii > >& g, int f, vector < int >& 
 
 inline void getPath(const vector < int >& distance, const vector < int >& parent, const int f, const int s, string& outStr)
 {
-   if (distance[s] != INT_MAX)
-   {
-      //outStr = "Vertex from: " + to_string(f) + ", vertex to: " + to_string(s) + ", distance: " + to_string(distance[s]) + ", path: ";
-      outStr = to_string(f) + " " + to_string(s) + " " + to_string(distance[s]);
-      //vector < int > path;
-      //for (int x = s; x != f; x = parent[x])
-      //   path.pb(x);
-      //path.pb(f);
-      //reverse(all(path));
-      //
-      //for (auto x : path)
-      //   outStr += to_string(x) + " ";
-   }
-   else
-   {
-      outStr.resize(0);
-   }
+   //outStr.reserve(200);
+
+   outStr = "Begin: " + to_string(f) + ", end: " + to_string(s) + ", distance: " + to_string(distance[s]) + ", path: ";
+   vector < int > path;
+   for (int x = s; x != f; x = parent[x])
+      path.pb(x);
+   path.pb(f);
+   reverse(all(path));
+   
+   for (auto x : path)
+      outStr += to_string(x) + " ";
 }
 
 inline void getAllRoutesBy(int startVertex, const vector < vector < pii > >& graph, ostream& out)
@@ -317,12 +311,14 @@ inline void getAllRoutesBy(int startVertex, const vector < vector < pii > >& gra
       if (i == startVertex)
          continue;
 
+      if (distance[i] == INT_MAX)
+      {
+         continue;
+      }
+      
       getPath(distance, parent, startVertex, i, path);
 
-      if (!path.empty())
-      {
-         out << path + "\n";
-      }
+      out << path + "\n";
    }
 }
 
