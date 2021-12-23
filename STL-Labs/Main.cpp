@@ -74,10 +74,9 @@ inline pii finder(const vector < pii >& vec, int v)
 {
    pii ans = pinf;
    for (const auto& x : vec)
-      if (x.F == v)
+      if (x.F == v && x.S < ans.S)
       {
          ans = x;
-         break;
       }
    return ans;
 }
@@ -88,7 +87,7 @@ inline void matrixPrinter(const GraphMatrix& graph, ostream& out)
    per(u, 1, size - 1)
    {
       per(v, 1, size - 1)
-         out << ((graph[u][v] == inf || u == v) ? 0 : graph[u][v]) << " \t";
+         out << ((graph[u][v] == inf) ? 0 : graph[u][v]) << " \t";
       out << endl;
    }
 }
@@ -117,11 +116,17 @@ inline void _floyd(GraphMatrix& sD, int numThreads = omp_get_max_threads())
    size_t size = sD.size();
 
 #pragma omp parallel for num_threads(numThreads) schedule(dynamic, 200)
-   per(i, 1, size - 1)
-      per(u, 1, size - 1)
-         per(v, 1, size - 1)
+   for (int i = 1; i < size; i++)
+   {
+      for (int u = 1; u < size; u++)
+      {
+         for (int v = 1; v < size; v++)
+         {
             if (sD[u][i] < inf && sD[i][v] < inf)
                sD[u][v] = min(sD[u][v], sD[u][i] + sD[i][v]);
+         }
+      }
+   }
 }
 
 void floydAlgMatrix(const GraphMatrix& graph, ostream& out, int numThreads = omp_get_max_threads())
@@ -131,8 +136,8 @@ void floydAlgMatrix(const GraphMatrix& graph, ostream& out, int numThreads = omp
 
    per(u, 1, size - 1)
       per(v, 1, size - 1)
-      if (!sD[u][v])
-         sD[u][v] = inf;
+         if (sD[u][v] == 0)
+            sD[u][v] = inf;
 
    _floyd(sD, numThreads);
 
@@ -144,11 +149,14 @@ void floydAlgList(const GraphList& graph, ostream& out, int numThreads = omp_get
    GraphMatrix sD;
    int size = static_cast<int>(sz(graph));
    sD.resize(size);
+
    per(i, 1, size - 1)
    {
-      sD[i].pb(inf);
+      sD[i].pb(0);   // Заполняем нулевые элементы каждого ряда
       per(j, 1, size - 1)
+      {
          sD[i].pb(finder(graph[i], j).S);
+      }
    }
 
    _floyd(sD, numThreads);
@@ -176,7 +184,7 @@ void solve(int num_threads)
    {
       int u, v, w;
       in >> u >> v >> w;
-      matrixGraph[u][v] = matrixGraph[v][u] = w;
+      matrixGraph[u][v] = matrixGraph[v][u] = (matrixGraph[u][v] == 0 ? w : min(w, matrixGraph[u][v]));
       listGraph[u].pb(mp(v, w));
       listGraph[v].pb(mp(u, w));
    }
@@ -200,8 +208,8 @@ void solve(int num_threads)
 int main()
 {
    setlocale(LC_ALL, "ru");
-   vector<int> numThreadsList = {  };
-   for (int i = 4; i <= omp_get_max_threads(); i += 2) numThreadsList.push_back(i);
+   vector<int> numThreadsList = { 1 };
+   for (int i = 2; i <= omp_get_max_threads(); i += 2) numThreadsList.push_back(i);
 
    for (auto& numThreads : numThreadsList)
    {
