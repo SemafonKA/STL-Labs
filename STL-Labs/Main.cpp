@@ -73,6 +73,8 @@ const pii pinf = mp(inf, inf);
 inline pii finder(const vector < pii >& vec, int v)
 {
    pii ans = pinf;
+   ans.F = v;
+
    for (const auto& x : vec)
       if (x.F == v && x.S < ans.S)
       {
@@ -131,14 +133,22 @@ inline void _floyd(GraphMatrix& sD, int numThreads = omp_get_max_threads())
 
 void floydAlgMatrix(const GraphMatrix& graph, ostream& out, int numThreads = omp_get_max_threads())
 {
-   GraphMatrix sD = graph;
+   //GraphMatrix sD = graph;
+   GraphMatrix sD;
    int size = static_cast<int>(sz(graph));
+   sD.resize(size);
 
+#pragma omp parallel for num_threads(numThreads)
    per(u, 1, size - 1)
-      per(v, 1, size - 1)
-         if (sD[u][v] == 0)
-            sD[u][v] = inf;
+   {
+      sD[u].resize(size);
 
+      per(v, 1, size - 1)
+         if (graph[u][v] != 0)
+            sD[u][v] = graph[u][v];
+         else
+            sD[u][v] = inf;
+   }
    _floyd(sD, numThreads);
 
    listPrinter(sD, out);
@@ -150,6 +160,7 @@ void floydAlgList(const GraphList& graph, ostream& out, int numThreads = omp_get
    int size = static_cast<int>(sz(graph));
    sD.resize(size);
 
+#pragma omp parallel for num_threads(numThreads)
    per(i, 1, size - 1)
    {
       sD[i].pb(0);   // Заполняем нулевые элементы каждого ряда
@@ -190,18 +201,18 @@ void solve(int num_threads)
    }
    in.close();
 
-   ofstream outMatrix("outMatrix.txt");
+   ofstream outMatrix("output.txt");
    Timer timer;
    floydAlgMatrix(matrixGraph, outMatrix, num_threads);
    timer.elapsed();
    cout << "Алгоритм по матрице завершил работу за " << timer.getLastElapsed() << " секунд" << endl;
    outMatrix.close();
 
-   ofstream outList("outList.txt");
+   ofstream outList("output.txt");
    timer.reset();
    floydAlgList(listGraph, outList, num_threads);
    timer.elapsed();
-   cout << "Алгоритм по листу завершил работу за " << timer.getLastElapsed() << " секунд" << endl;
+   cout << "Алгоритм по листу завершил работу за   " << timer.getLastElapsed() << " секунд" << endl;
    outList.close();
 }
 
