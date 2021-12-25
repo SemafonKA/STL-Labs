@@ -117,9 +117,9 @@ inline void _floyd(GraphMatrix& sD, int numThreads = omp_get_max_threads())
 {
    size_t size = sD.size();
 
-#pragma omp parallel for num_threads(numThreads) schedule(dynamic, 200)
    for (int i = 1; i < size; i++)
    {
+#pragma omp parallel for num_threads(numThreads)
       for (int u = 1; u < size; u++)
       {
          for (int v = 1; v < size; v++)
@@ -220,7 +220,7 @@ int main()
 {
    setlocale(LC_ALL, "ru");
    vector<int> numThreadsList = { 1 };
-   for (int i = 2; i <= omp_get_max_threads(); i += 2) numThreadsList.push_back(i);
+   //for (int i = 2; i <= omp_get_max_threads(); i += 2) numThreadsList.push_back(i);
 
    for (auto& numThreads : numThreadsList)
    {
